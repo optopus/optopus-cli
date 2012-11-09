@@ -2,6 +2,7 @@ import urllib2
 import json
 from argparse import ArgumentParser
 import sys
+import os
 
 class Client(object):
     def __init__(self, endpoint):
@@ -24,7 +25,7 @@ class CLI(object):
     @classmethod
     def run(class_):
         class_.parse_args()
-        client = Client('http://optopus.shuttercorp.net')
+        client = Client(class_.args.optopus_endpoint)
         types = ['node', 'hypervisor', 'network_node']
         query_string = ' '.join(class_.args.query)
         results = client.search(query_string, types)
@@ -41,5 +42,6 @@ class CLI(object):
         parser = ArgumentParser(description='Search the optopus api and perform various actions')
         parser.add_argument('query', metavar='QUERY', nargs='+', help="Query for nodes, this can take any elasticsearch parameters compatble with a search string")
         parser.add_argument('-sF', '--show-facts', nargs='+', metavar='FACTS', help="Show facts about the resulting nodes. Can be comma separated for multiple facts.")
+        parser.add_argument('-e', '--optopus-endpoint', default=os.environ.get('OPTOPUS_ENDPOINT', None))
         class_.args = parser.parse_args()
 
