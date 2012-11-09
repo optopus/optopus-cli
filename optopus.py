@@ -29,7 +29,6 @@ class CLI(object):
         types = ['node', 'hypervisor', 'network_node']
         query_string = ' '.join(class_.args.query)
         results = client.search(query_string, types)
-        print class_.args.show_facts
         for item in results:
             print item['hostname']
             if class_.args.show_facts:
