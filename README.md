@@ -19,7 +19,7 @@ Search queries are passed to optopus which in turn just uses elasticsearch. Pret
     ..snip..
 
 ### Run commands against the resulting hosts
-Running commands just uses Fabric. You can set the login user by setting the environment variable <code>FAB_USER</code>, or passing in the <code>--fab-user</code> flag.
+Running commands just uses Fabric. You can set the login user by setting the environment variable <code>FAB_USER</code>, or passing in the <code>--fab-user</code> flag. If you want to run comands in parallel, use the <code>--parallel</code> flag.
 
     $ optopus-cli location:tx01 and facts.productname:PowerEdge --run uptime
 
@@ -27,3 +27,5 @@ Or with sudo
 
     $ optopus-cli location:ma01 and facts.productname:PowerEdge --sudo tail /var/log/messages
 
+### Additional functionality
+You can use the <code>--put</code> flag to scp files to remote hosts and the <code>--get</code> flag to retrieve files from remote hosts.
