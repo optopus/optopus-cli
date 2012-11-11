@@ -20,6 +20,7 @@ To get going, you can set the environment variable <code>OPTOPUS_ENDPOINT</code>
 
 ### Run commands against the resulting hosts
 Running commands just uses Fabric. You can set the login user by setting the environment variable <code>FAB_USER</code>, or passing in the <code>--fab-user</code> flag.
+
     $ optopus-cli location:tx01 and facts.productname:PowerEdge --run uptime
 
 Or with sudo
