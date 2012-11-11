@@ -48,10 +48,6 @@ class CLI(object):
             class_.display_hosts(results)
 
     @classmethod
-    def get_fab_settings(class_, host_list):
-        return { 'user': class_.args.fab_user }
-
-    @classmethod
     def get_hosts(class_, results):
         hosts = []
         for item in results:
