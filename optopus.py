@@ -1,8 +1,11 @@
-import urllib2
-import json
 from argparse import ArgumentParser
-import sys
+from fabric.api import hosts
+from fabric.tasks import Task
+import fabric.api
+import json
 import os
+import sys
+import urllib2
 
 class Client(object):
     def __init__(self, endpoint):
@@ -29,6 +32,34 @@ class CLI(object):
         types = ['node', 'hypervisor', 'network_node']
         query_string = ' '.join(class_.args.query)
         results = client.search(query_string, types)
+        if class_.args.run or class_.args.sudo:
+            if class_.args.run:
+                fab_method = fabric.operations.run
+                fab_args = ' '.join(class_.args.run)
+            else:
+                fab_method = fabric.operations.sudo
+                fab_args = ' '.join(class_.args.sudo)
+
+            for host in class_.get_hosts(results):
+                settings = { 'user': class_.args.fab_user, 'host_string': host }
+                with fabric.context_managers.settings(**settings):
+                    fab_method(fab_args)
+        else:
+            class_.display_hosts(results)
+
+    @classmethod
+    def get_fab_settings(class_, host_list):
+        return { 'user': class_.args.fab_user }
+
+    @classmethod
+    def get_hosts(class_, results):
+        hosts = []
+        for item in results:
+            hosts.append(item['hostname'])
+        return hosts
+
+    @classmethod
+    def display_hosts(class_, results):
         for item in results:
             print item['hostname']
             if class_.args.show_facts:
@@ -42,5 +73,8 @@ class CLI(object):
         parser.add_argument('query', metavar='QUERY', nargs='+', help="Query for nodes, this can take any elasticsearch parameters compatble with a search string")
         parser.add_argument('-sF', '--show-facts', nargs='+', metavar='FACTS', help="Show facts about the resulting nodes. Can be comma separated for multiple facts.")
         parser.add_argument('-e', '--optopus-endpoint', default=os.environ.get('OPTOPUS_ENDPOINT', None))
+        parser.add_argument('--run', metavar='SHELL', nargs='+', help="Run a shell command against the resulting hosts")
+        parser.add_argument('--sudo', metavar='SHELL', nargs='+', help="Run a shell command using sudo against the resulting hosts")
+        parser.add_argument('--fab-user', metavar='USER', default=os.environ.get('FAB_USER', os.environ.get('USER')), help="When invoking Fabric, use this user to run shell commands")
         class_.args = parser.parse_args()
 
