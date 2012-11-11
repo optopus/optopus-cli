@@ -5,7 +5,7 @@ This uses the optopus search API to get information about nodes as well as execu
 To get going, you can set the environment variable <code>OPTOPUS_ENDPOINT</code> or the flag <code>--optopus-endpoint</code> to the location of your optopus installation.
 
 ### Example queries
-    Search queries are passed to optopus which in turn just uses elasticsearch. Pretty much any elasticsearch query string will work. The <code>--show-facts</code> flag can be used to display facts about the resulting nodes.
+Search queries are passed to optopus which in turn just uses elasticsearch. Pretty much any elasticsearch query string will work. The <code>--show-facts</code> flag can be used to display facts about the resulting nodes.
 
     $ optopus-cli location:nyc02 and facts.productname:PowerEdge --show-facts productname ipaddress
     dev-db01.nyc02.foo.net
