@@ -100,7 +100,7 @@ class CLI(object):
     def parse_args(class_):
         parser = ArgumentParser(description='Search the optopus api and perform various actions')
         parser.add_argument('query', metavar='QUERY', nargs='+', help="Query for nodes, this can take any elasticsearch parameters compatble with a search string")
-        parser.add_argument('-sF', '--show-facts', nargs='+', metavar='FACTS', help="Show facts about the resulting nodes. Can be comma separated for multiple facts.")
+        parser.add_argument('-sF', '--show-facts', nargs='+', metavar='FACT', help="Show facts about the resulting nodes")
         parser.add_argument('-e', '--optopus-endpoint', default=os.environ.get('OPTOPUS_ENDPOINT', None))
         parser.add_argument('--run', metavar='SHELL', nargs='+', help="Run a shell command against the resulting hosts")
         parser.add_argument('--sudo', metavar='SHELL', nargs='+', help="Run a shell command using sudo against the resulting hosts")
