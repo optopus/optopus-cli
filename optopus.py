@@ -18,8 +18,9 @@ class FabWrapper(Task):
         self.func(**self.kwargs)
 
 class Client(object):
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, dry_run=False):
         self._endpoint = endpoint
+        self._dry_run = dry_run
 
     def search(self, string, types=None):
         path = "/api/search?string=%s" % urllib2.quote(string)
@@ -31,17 +32,24 @@ class Client(object):
         req = urllib2.Request("%s%s" % (self._endpoint, path))
         req.add_header('Accept', 'application/json')
         req.add_header('User-agent', 'optopus-cli/0.1')
-        url = urllib2.urlopen(req)
-        return json.loads(url.read())['results']
+        if self._dry_run:
+            results = req.get_full_url()
+        else:
+            url = urllib2.urlopen(req)
+            results = json.loads(url.read())['results']
+        return results
 
 class CLI(object):
     @classmethod
     def run(class_):
         class_.parse_args()
-        client = Client(class_.args.optopus_endpoint)
+        client = Client(class_.args.optopus_endpoint, class_.args.show_url)
         types = ['node', 'hypervisor', 'network_node']
         query_string = ' '.join(class_.args.query)
         results = client.search(query_string, types)
+        if class_.args.show_url:
+            print results
+            sys.exit(0)
         if class_.check_args_for_fabric():
             class_.execute_fabric(class_.get_hosts(results))
         else:
@@ -103,6 +111,7 @@ class CLI(object):
     def parse_args(class_):
         parser = ArgumentParser(description='Search the optopus api and perform various actions')
         parser.add_argument('query', metavar='QUERY', nargs='+', help="Query for nodes, this can take any elasticsearch parameters compatble with a search string")
+        parser.add_argument('--show-url', action='store_true', default=False, help="Return the optopus url that will be called and exit")
         parser.add_argument('-sF', '--show-facts', nargs='+', metavar='FACT', help="Show facts about the resulting nodes")
         parser.add_argument('-sP', '--show-properties', nargs='+', metavar='PROPERTY', help="Show properties about the resulting nodes")
         parser.add_argument('-e', '--optopus-endpoint', default=os.environ.get('OPTOPUS_ENDPOINT', None))
