@@ -74,10 +74,10 @@ class CLI(object):
     def execute_fabric(class_, hosts):
         if class_.args.run:
             fab_method = fabric.operations.run
-            fab_kwargs = { 'command': ' '.join(class_.args.run) }
+            fab_kwargs = { 'command': ' '.join(class_.args.run), 'warn_only': True }
         elif class_.args.sudo:
             fab_method = fabric.operations.sudo
-            fab_kwargs = { 'command': ' '.join(class_.args.sudo) }
+            fab_kwargs = { 'command': ' '.join(class_.args.sudo), 'warn_only': True }
         elif class_.args.get:
             fab_method = fabric.operations.get
             fab_kwargs = { 'remote_path': class_.args.get }
